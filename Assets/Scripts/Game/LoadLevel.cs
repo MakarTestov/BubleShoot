@@ -120,6 +120,8 @@ namespace Assets.Scripts.Game
                     index.j = 0;
                 }
             }
+            SetspringJoint();
+            DeleteAutoDistance();
         }
         #endregion
 
@@ -160,7 +162,7 @@ namespace Assets.Scripts.Game
             paterncircle[index.i, index.j] = Instantiate(Patern, Parent);
             SetparametersNewObject(xml, paterncircle[index.i, index.j]);
             SetPositionPatern(paterncircle[index.i, index.j]);
-            SetspringJoint(index.i, index.j);
+            //SetspringJoint(index.i, index.j);
             CreateOb?.Invoke(paterncircle[index.i, index.j]);
         }
         #endregion
@@ -195,16 +197,71 @@ namespace Assets.Scripts.Game
         /// </summary>
         /// <param name="i">индекс строки узла</param>
         /// <param name="j">индекс столбца узла</param>
-        private void SetspringJoint(int i, int j)
+        private void SetspringJoint()
         {
-            if(j == 0)
+            for (int i = 1; i < paterncircle.GetLength(0) - 1; i++)
             {
-                paterncircle[i, j].GetComponent<SpringJoint2D>().connectedAnchor = new Vector2(paterncircle[i, j].transform.position.x, 
-                    paterncircle[i, j].transform.position.y+1.0f);
+                for (int j = 1; j < paterncircle.GetLength(1) - 1; j++)
+                {
+                    paterncircle[i, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i - 1, j].GetComponent<Rigidbody2D>();
+                    paterncircle[i, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i + 1, j].GetComponent<Rigidbody2D>();
+                    paterncircle[i, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i, j - 1].GetComponent<Rigidbody2D>();
+                    paterncircle[i, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i, j + 1].GetComponent<Rigidbody2D>();
+                }
             }
-            else
+
+            for(int i = 0; i < paterncircle.GetLength(0); i++)
             {
-                paterncircle[i, j].GetComponent<SpringJoint2D>().connectedBody = paterncircle[i, j-1].GetComponent<Rigidbody2D>();
+                if(i < paterncircle.GetLength(0) - 1)
+                {
+                    paterncircle[i, 0].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i + 1, 0].GetComponent<Rigidbody2D>();
+                    paterncircle[i, paterncircle.GetLength(1) - 1].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i + 1, paterncircle.GetLength(1) - 1].GetComponent<Rigidbody2D>();
+                }
+                if(i > 0)
+                {
+                    paterncircle[i, 0].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i - 1, 0].GetComponent<Rigidbody2D>();
+                    paterncircle[i, paterncircle.GetLength(1) - 1].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i - 1, paterncircle.GetLength(1) - 1].GetComponent<Rigidbody2D>();
+                }
+                paterncircle[i, 0].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i, 1].GetComponent<Rigidbody2D>();
+                paterncircle[i, paterncircle.GetLength(1) - 1].AddComponent<SpringJoint2D>().connectedBody = paterncircle[i, paterncircle.GetLength(1) - 2].GetComponent<Rigidbody2D>();
+            }
+
+            for(int j = 0; j < paterncircle.GetLength(1); j++)
+            {
+                paterncircle[0, j].AddComponent<SpringJoint2D>().connectedAnchor = new Vector2(paterncircle[0, j].transform.position.x,
+                    paterncircle[0, j].transform.position.y + 1.0f);
+                if (j < paterncircle.GetLength(1) - 1)
+                {
+                    paterncircle[0, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[0, j + 1].GetComponent<Rigidbody2D>();
+                    paterncircle[paterncircle.GetLength(0) - 1, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[paterncircle.GetLength(0) - 1, j + 1].GetComponent<Rigidbody2D>();
+                }
+                if(j > 0)
+                {
+                    paterncircle[0, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[0, j - 1].GetComponent<Rigidbody2D>();
+                    paterncircle[paterncircle.GetLength(0) - 1, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[paterncircle.GetLength(0) - 1, j - 1].GetComponent<Rigidbody2D>();
+                }
+                paterncircle[0, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[1, j].GetComponent<Rigidbody2D>();
+                paterncircle[paterncircle.GetLength(0) - 1, j].AddComponent<SpringJoint2D>().connectedBody = paterncircle[paterncircle.GetLength(0) - 2, j].GetComponent<Rigidbody2D>();
+            }
+        }
+        #endregion
+
+        #region DeleteAutoDistance()
+        /// <summary>
+        /// Утсанавливаем значения пружины
+        /// </summary>
+        private void DeleteAutoDistance()
+        {
+            foreach(GameObject r in paterncircle)
+            {
+                foreach(SpringJoint2D v in r.GetComponents<SpringJoint2D>())
+                {
+                    v.autoConfigureDistance = false;
+                    v.frequency = 10;
+                    v.dampingRatio = 1;
+                    v.distance = 0.4f;
+                    v.enableCollision = true;
+                }
             }
         }
         #endregion
@@ -217,7 +274,7 @@ namespace Assets.Scripts.Game
         private void SetPositionPatern(GameObject ob)
         {
             RectTransform rect = ob.GetComponent<RectTransform>();
-            Vector3 pos = SpawnPoint.localPosition + new Vector3(rect.rect.width * index.i, -rect.rect.height * index.j);
+            Vector3 pos = SpawnPoint.localPosition + new Vector3(rect.rect.width * index.j, -rect.rect.height * index.i);
             ob.transform.localPosition = pos;
         }
         #endregion

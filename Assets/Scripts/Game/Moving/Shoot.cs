@@ -107,8 +107,6 @@ namespace Assets.Scripts.Game.Moving
             GetComponent<TrejectRender>().enabled = false;
             ballmove.Handle = null;
             treject.enabled = false;
-            //Debug.Log(ballmove.Horizontal);
-            //ballmove.Horizontal += (float)(new System.Random().NextDouble());
             if (maxdist >= 1)
             {
                 ismaxspeed = true;
@@ -123,6 +121,7 @@ namespace Assets.Scripts.Game.Moving
 
         public void OnCollisionEnter2D(Collision2D collision)
         {
+            Debug.Log("Yes");
             if(collision.transform.tag == "ball")
             {
                 if(ismaxspeed)
@@ -200,7 +199,7 @@ namespace Assets.Scripts.Game.Moving
         /// <param name="ob"></param>
         private void SetSpringJoint(Rigidbody2D ob)
         {
-            GetComponent<SpringJoint2D>().connectedBody = ob;
+            gameObject.AddComponent<SpringJoint2D>().connectedBody = ob;
         }
         #endregion
 
@@ -212,7 +211,7 @@ namespace Assets.Scripts.Game.Moving
         private void DeleteColorBall(Shoot shoot)
         {
             Debug.Log("Start destroy");
-            GetComponent<DeleteColorBall>().DeleteFromAllColor(new List<GameObject> { gameObject }, GetComponent<Image>().color);
+            //GetComponent<DeleteColorBall>().DeleteFromAllColor(new List<GameObject> { gameObject }, GetComponent<Image>().color);
         }
     }
 }

@@ -8,32 +8,47 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Game
 {
+    /// <summary>
+    /// При столкновении удалить шары одного цвета
+    /// </summary>
     class DeleteColorBall : MonoBehaviour
     {
-        #region Parameters
-        #region Radius
-        public int radius = 5000;
-        #endregion
-        #endregion
-
-        #region DeleteFromAllColor(List<GameObject> pastobjects)
-        /// <summary>
-        /// Удалить все объекты в радиусе того же цвета
-        /// </summary>
-        /// <param name="pastobjects"></param>
-        public void DeleteFromAllColor(List<GameObject> pastobjects, Color color)
+        public void DeleteObColor(GameObject ob)
         {
-            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.localPosition, radius);
-            foreach(var hitcollider in hitColliders)
+            List<GameObject> listob = DeleteAllBallColor(new List<GameObject> { ob }, ob.GetComponent<Image>().color);
+            Debug.Log(listob.Count);
+            if (listob.Count > 2)
             {
-                if(color == hitcollider.GetComponent<Image>().color && pastobjects.Find(x => x == hitcollider.gameObject) == null)
+                foreach (GameObject r in listob)
                 {
-                    pastobjects.Add(transform.gameObject);
-                    Debug.Log("NextBallColor");
-                    hitcollider.gameObject.GetComponent<DeleteColorBall>().DeleteFromAllColor(pastobjects, color);
+                    Destroy(r);
                 }
             }
-            Destroy(transform.gameObject);
+        }
+        #region DeleteAllBallColor(List<GameObject> ob, Color color)
+        /// <summary>
+        /// Удалить все шары того же цвета обойдя все связи
+        /// </summary>
+        /// <param name="ob"></param>
+        /// <param name="color"></param>
+        public List<GameObject> DeleteAllBallColor(List<GameObject> ob, Color color)
+        {
+            //Debug.Log(gameObject.GetComponents<SpringJoint2D>().Length);
+            SpringJoint2D[] sp = gameObject.GetComponents<SpringJoint2D>();
+            Debug.Log(sp.Length);
+            if (sp.Length > 0)
+            {
+                Debug.Log("ifup");
+                foreach (SpringJoint2D r in sp)
+                {
+                    if (r.GetComponent<Image>().color == color && !ob.Exists(x => x == r.gameObject))
+                    {
+                        ob.Add(r.gameObject);
+                        r.GetComponent<DeleteColorBall>().DeleteAllBallColor(ob, color);
+                    }
+                }
+            }
+            return ob;
         }
         #endregion
     }

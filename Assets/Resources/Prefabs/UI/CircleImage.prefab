@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6903888535627833577}
   - component: {fileID: 604263986677402569}
   - component: {fileID: 945031695916613612}
+  - component: {fileID: 5421990145624649073}
   - component: {fileID: 6694316185073944018}
   m_Layer: 5
   m_Name: CircleImage
@@ -114,6 +115,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 1
+--- !u!114 &5421990145624649073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6903888535627833575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c9ed92c5fa82cd458ba4bb1915c7c83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6694316185073944018
 MonoBehaviour:
   m_ObjectHideFlags: 0

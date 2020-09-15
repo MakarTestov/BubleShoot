@@ -121,12 +121,11 @@ namespace Assets.Scripts.Game.Moving
 
         public void OnCollisionEnter2D(Collision2D collision)
         {
-            Debug.Log("Yes");
-            if(collision.transform.tag == "ball")
+            if (collision.transform.tag == "ball")
             {
-                if(ismaxspeed)
+                if (ismaxspeed)
                 {
-                    if(isfirstcoll)
+                    if (isfirstcoll)
                     {
                         Destroy(collision.gameObject);
                         isfirstcoll = false;
@@ -141,18 +140,15 @@ namespace Assets.Scripts.Game.Moving
                     SetParametersAfterColli(collision);
                 }
             }
-            if(ismove == false)
+            if (collision.transform.tag == "updownwall")
             {
-                if(collision.transform.tag == "Wall")
-                {
-                    Destroy(gameObject);
-                }
+                Destroy(gameObject);
             }
         }
 
         private void FixedUpdate()
         {
-            if(ismove)
+            if (ismove)
             {
                 //transform.rotation = Quaternion.LookRotation(new Vector3(ballmove.Horizontal, ballmove.Vertical));
                 Vector3 move = new Vector3(-ballmove.Horizontal, -ballmove.Vertical, 0);
@@ -169,7 +165,7 @@ namespace Assets.Scripts.Game.Moving
         private void CheckPosition()
         {
             int w = Display.main.systemWidth / 2;
-            if(transform.localPosition.x < -w || transform.localPosition.x > w)
+            if (transform.localPosition.x < -w || transform.localPosition.x > w)
             {
                 ballmove.Horizontal = -ballmove.Horizontal;
             }
@@ -203,15 +199,15 @@ namespace Assets.Scripts.Game.Moving
         }
         #endregion
 
-
+        #region DeleteColorBall(Shoot shoot)
         /// <summary>
         /// Удалить шарики того же цвета
         /// </summary>
         /// <param name="shoot"></param>
         private void DeleteColorBall(Shoot shoot)
         {
-            Debug.Log("Start destroy");
-            //GetComponent<DeleteColorBall>().DeleteFromAllColor(new List<GameObject> { gameObject }, GetComponent<Image>().color);
+            GetComponent<DeleteColorBall>().DeleteObColor(gameObject);
         }
+        #endregion
     }
 }

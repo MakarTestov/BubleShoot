@@ -120,8 +120,19 @@ namespace Assets.Scripts.Game.Moving
                 ismaxspeed = false;
             }
             speed *= maxdist;
+            SetRandomTreject();
             ismove = true;
         }
+
+        #region SetRandomTreject()
+        /// <summary>
+        /// Устанавливает искажение полета
+        /// </summary>
+        private void SetRandomTreject()
+        {
+            ballmove.Horizontal += UnityEngine.Random.Range(-0.1f, 0.1f);
+        }
+        #endregion
 
         public void OnCollisionEnter2D(Collision2D collision)
         {

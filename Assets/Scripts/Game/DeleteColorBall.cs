@@ -16,7 +16,6 @@ namespace Assets.Scripts.Game
         public void DeleteObColor(GameObject ob)
         {
             List<GameObject> listob = DeleteAllBallColor(new List<GameObject> { ob }, ob.GetComponent<Image>().color);
-            Debug.Log(listob.Count);
             if (listob.Count > 2)
             {
                 foreach (GameObject r in listob)
@@ -35,16 +34,14 @@ namespace Assets.Scripts.Game
         {
             //Debug.Log(gameObject.GetComponents<SpringJoint2D>().Length);
             SpringJoint2D[] sp = gameObject.GetComponents<SpringJoint2D>();
-            Debug.Log(sp.Length);
             if (sp.Length > 0)
             {
-                Debug.Log("ifup");
-                foreach (SpringJoint2D r in sp)
+                foreach (SpringJoint2D r in sp.Where(x => x.connectedBody != null))
                 {
-                    if (r.GetComponent<Image>().color == color && !ob.Exists(x => x == r.gameObject))
+                    if (r.connectedBody.GetComponent<Image>().color == color && !ob.Exists(x => x == r.connectedBody.gameObject))
                     {
-                        ob.Add(r.gameObject);
-                        r.GetComponent<DeleteColorBall>().DeleteAllBallColor(ob, color);
+                        ob.Add(r.connectedBody.gameObject);
+                        r.connectedBody.GetComponent<DeleteColorBall>().DeleteAllBallColor(ob, color);
                     }
                 }
             }

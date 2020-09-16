@@ -9,6 +9,9 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Game.Moving
 {
+    /// <summary>
+    /// Класс для стрельбы шарами
+    /// </summary>
     [RequireComponent(typeof(MovePlayerBall))]
     [RequireComponent(typeof(TrejectRender))]
     class Shoot : MonoBehaviour
@@ -92,6 +95,7 @@ namespace Assets.Scripts.Game.Moving
         private void Start()
         {
             ballmove = GetComponent<MovePlayerBall>();
+            GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
             end += DeleteColorBall;
         }
 
@@ -140,9 +144,14 @@ namespace Assets.Scripts.Game.Moving
                     SetParametersAfterColli(collision);
                 }
             }
-            if (collision.transform.tag == "updownwall")
+            if (collision.transform.tag == "downwall")
             {
                 Destroy(gameObject);
+            }
+            if(collision.transform.tag == "upwall")
+            {
+                SetParametersAfterColli(collision);
+                //SetSpringJoint(collision.gameObject.GetComponent<Rigidbody2D>());
             }
         }
 
@@ -184,6 +193,8 @@ namespace Assets.Scripts.Game.Moving
             treject.enabled = false;
             GetComponent<Shoot>().enabled = false;
             ismove = false;
+            GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            
             end?.Invoke(this);
         }
         #endregion
@@ -196,6 +207,9 @@ namespace Assets.Scripts.Game.Moving
         private void SetSpringJoint(Rigidbody2D ob)
         {
             gameObject.AddComponent<SpringJoint2D>().connectedBody = ob;
+            GetComponent<SpringJoint2D>().distance = 0.4f;
+            GetComponent<SpringJoint2D>().frequency = 10.0f;
+            GetComponent<SpringJoint2D>().dampingRatio = 1;
         }
         #endregion
 

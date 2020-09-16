@@ -29,9 +29,14 @@ namespace Assets.Scripts.Game
         #region Unity Method
         private void OnDestroy()
         {
-            Destroy(Instantiate(Boom, gameObject.transform.position, Quaternion.identity,gameObject.transform.parent), 1.0f);
-            Deleteob?.Invoke();
+            Delete();
         }
         #endregion
+
+        public void Delete()
+        {
+            Destroy(Instantiate(Boom, gameObject.transform.position, Quaternion.identity, gameObject.transform.parent), 1.0f);
+            Deleteob?.Invoke();
+        }
     }
 }

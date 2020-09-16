@@ -7,6 +7,8 @@ TagManager:
   - Wall
   - ball
   - updownwall
+  - downwall
+  - upwall
   layers:
   - Default
   - TransparentFX
